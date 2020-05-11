@@ -1,0 +1,47 @@
+eksctl get cluster --profile payman
+
+# Build Kubernetes cluster and download YAML files
+eksctl create cluster \
+  --name wp-cluster \
+  --version 1.14 \
+  --nodegroup-name standard-workers \
+  --node-type t3.medium \
+  --nodes 3 \
+  --nodes-min 1 \
+  --nodes-max 4 \
+  --node-ami auto \
+  --profile payman
+
+# View .kube/config
+cat ~/.kube/config
+
+# Use kubectl to get services
+# internal cluster ip address
+kubectl get svc
+kubectl get node
+
+# Set up mysql root credential
+kubectl create secret generic mysql-pass --from-literal=password=bigsecret
+kubectl get secrets
+
+curl https://raw.githubusercontent.com/kubernetes/website/master/content/en/examples/application/wordpress/mysql-deployment.yaml > mysql-deployment.yaml
+
+curl https://raw.githubusercontent.com/kubernetes/website/master/content/en/examples/application/wordpress/wordpress-deployment.yaml > wordpress-deployment.yaml
+
+
+# Launch mysql service
+kubectl create -f mysql-deployment.yaml
+kubectl get pvc #tells us about data volume
+kubectl get pods #tells us about nodes
+
+# Launch wordpress service
+kubectl create -f wordpress-deployment.yaml
+kubectl get services wordpress  #gets the load balancer
+kubectl get services --all-namespaces -o wide   #returns ip address/hostname
+
+# Tear down
+kubectl delete secret mysql-pass
+kubectl delete deployment -l app=wordpress
+kubectl delete service -l app=wordpress
+kubectl delete pvc -l app=wordpress
+eksctl delete cluster --name wp-cluster --profile payman

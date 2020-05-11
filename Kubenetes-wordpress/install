@@ -1,0 +1,29 @@
+# 1. Install eksctl - a cli for Amazon EKS
+https://eksctl.io/
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+
+# 2. Install kubectl - a cli for communicating with the cluster API server
+https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
+
+[macOS:]
+curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/darwin/amd64/kubectl
+
+# Verify download 
+curl -o kubectl.sha256 https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/darwin/amd64/kubectl.sha256 
+openssl sha1 -sha256 kubectl
+
+# Apply execute permission to the binary
+chmod +x ./kubectl
+
+# Add kubectl to your path
+mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+echo 'export PATH=$PATH:$HOME/bin' >> ~/.bash_profile
+
+# verify instalation
+kubectl version --short --client
+
+# 3. Install aws-iam-authenticator
+brew install aws-iam-authenticator
+aws-iam-authenticator help

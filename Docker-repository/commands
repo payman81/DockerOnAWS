@@ -1,0 +1,35 @@
+# Build and run a simple webserver
+docker build -t newserver .
+docker run -d -p 80:80 newserver
+
+# login to docker hub
+docker login
+
+# use image id to tag the image
+docker images
+docker tag c86dc12d35ec payman81/newserver
+
+# configure ECS
+
+ecs-cli configure \
+  --cluster ec2cluster2 \
+  --region eu-west-1 \
+  --default-launch-type EC2 \
+  --config-name ec2cluster2
+
+ecs-cli up \
+  --capability-iam \
+  --size 1 \
+  --instance-type t3.medium \
+  --cluster-config ec2cluster2
+
+ecs-cli compose \
+  --project-name ec2cluster service up \
+  --cluster-config ec2cluster2
+
+# Find public ip address and browse to the app
+ecs-cli ps --cluster-config ec2cluster2
+
+[shut down:]
+ecs-cli compose down --cluster-config ec2cluster2
+ecs-cli down --force --cluster-config ec2cluster2

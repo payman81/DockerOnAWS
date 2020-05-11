@@ -1,0 +1,11 @@
+# permission to run install-docker.sh
+chmod +x install-docker.sh
+
+# add 'ubuntu' to newly created group to allow for running docker command without sudo
+# docker:x:999: -> docker:x:999:ubuntu
+sudo nano /etc/group
+
+# Build and run a container
+docker build -t "webserver" .
+docker images
+docker run -d -p 80:80 webserver /usr/sbin/apache2ctl -D FOREGROUND

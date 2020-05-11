@@ -1,0 +1,6 @@
+version: '3'
+services:
+  apache:
+    image: payman81/newserver
+    ports:
+      - "80:80"
