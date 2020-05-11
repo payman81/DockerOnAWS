@@ -5,7 +5,7 @@ less stack.yml
 docker swarm init
 docker stack deploy -c stack.yml mywordpress
 
-# wait for 5 minutes for 2 containers start in a node
+# wait for 5 minutes for 2 containers
 docker node ls 
 
-# visit localhost to v erify Wordpress site is running
+# visit localhost to verify Wordpress site is running
